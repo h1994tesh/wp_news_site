@@ -43,4 +43,17 @@
         <div class="clear"></div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-2 col-lg-2 col-sm-2">
+    </div>
+    <div class="col-md-5 col-lg-5 col-sm-5">
+        <div class="footer-callout">
+            <div class="footer-callout-image"></div>
+            <div class="footer-callout-text">
+                <h2><?php echo get_theme_mod('lwp-footer-callout-headline'); ?></h2>
+                <p>Dummy Text</p>
+            </div>
+        </div>
+    </div>
+</div>
 <?php get_footer(); ?>

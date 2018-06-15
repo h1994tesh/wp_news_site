@@ -60,7 +60,8 @@ function learningWordpress_posts_formats() {
 
 add_action('after_setup_theme', 'learningWordpress_posts_formats');
 /* add our widget locations */
-function ourWidgetsInit(){
+
+function ourWidgetsInit() {
     register_sidebar(array(
         'name' => 'Sidebar',
         'id' => 'sidebar1',
@@ -68,8 +69,81 @@ function ourWidgetsInit(){
         'after_widget' => '</ul>'
     ));
 }
+
 add_action('widgets_init', 'ourWidgetsInit');
 
-function learningWordpress_customize_register(){
-    
+function learningWordpress_customize_register($wp_customize) {
+    $wp_customize->add_section('learningWordpress_link_color', array(
+        'title' => __('Standard Colors', 'learningWordpress'),
+        'description' => '',
+        'priority' => 30,
+    ));
+
+    $wp_customize->add_setting('learningWordpress_link_color', array(
+        'default' => '#fff',
+        'type' => 'theme_mod',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'learningWordpress_link_color', array(
+        'label' => __('Link Colors', 'learningWordpress'),
+        'section' => 'learningWordpress_link_color',
+        'settings' => 'learningWordpress_link_color',
+    )));
+
+
+    /* $wp_customize->add_section('learningWordpress_btn_color', array(
+      'title' => __('Button Colors', 'learningWordpress'),
+      'description' => '',
+      'priority' => 31,
+      ));
+
+      $wp_customize->add_setting('learningWordpress_btn_color', array(
+      'default' => '#006ec3',
+      'type' => 'theme_mod',
+      ));
+
+      $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'learningWordpress_btn_color', array(
+      'label' => __('Button Colors', 'learningWordpress'),
+      'section' => 'learningWordpress_btn_color',
+      'settings' => 'learningWordpress_btn_color',
+      ))); */
 }
+
+add_action('customize_register', 'learningWordpress_customize_register');
+
+function learningWordpress_customize_css() {
+    ?>
+    <style>
+        a:link,
+        a:visited {
+            color: <?php echo get_theme_mod('learningWordpress_link_color'); ?>;
+        }
+        .button{
+            background-color: <?php echo get_theme_mod('learningWordpress_btn_color'); ?>;
+        }
+    </style>
+<?php
+}
+
+add_action('wp_head', 'learningWordpress_customize_css');
+
+// add footer callout section to admin appearance customize screen
+
+function learningWordpress_footer_callout($wp_customize) {
+
+    $wp_customize->add_section('learningWordpress-footer-callout-section', array(
+        'title' => __('Footer Callout', 'learningWordpress'),
+        'priority' => 10,
+    ));
+    /*$wp_customize->add_setting('learningWordpress-footer-callout-headline', array(
+        'default' => 'Example Headline text!',
+        'type' => 'theme_mod'
+    ));
+    $wp_customize->add_control(new WP_Customize_Control($wp_customize, 'learningWordpress-footer-callout-headline-section', array(
+        'label' => 'Headline',
+        'section' => 'learningWordpress-footer-callout-headline-section',
+        'setting' => 'learningWordpress-footer-callout-headline'
+    )));*/
+}
+
+add_action('customize_register', 'learningWordpress_footer_callout');
