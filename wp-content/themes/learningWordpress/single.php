@@ -47,7 +47,6 @@
                         ?></div>
                         <?php the_post_thumbnail('banner-image'); ?>
                         <?php the_content(); ?>
-                        <a href="<?php the_permalink(); ?>" class="button">Read more</a>
                     </article>
                     <?php
                 endwhile;

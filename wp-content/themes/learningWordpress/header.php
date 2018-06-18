@@ -2,7 +2,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php bloginfo('name'); ?></title>
+<title><?php 
+    if(is_page('home') || is_front_page()){
+        bloginfo('name');
+    }else{
+        wp_title("|", true, 'right'); 
+    }
+?></title>
 <?php wp_head(); ?>
 
 <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">

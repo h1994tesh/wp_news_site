@@ -229,8 +229,52 @@ class wp_simple_location {
                 $html .= $wp_location_title;
                 $html .= '</a>';
                 $html .= '</h2>';
+
+                if (!empty($wp_location_thumbnail) || !empty($wp_location_content)) {
+                    //title
+                    $html .= '<h2 class="title">';
+                    $html .= '<a href="' . $wp_location_permalink . '" title="view location">';
+                    $html .= $wp_location_title;
+                    $html .= '</a>';
+                    $html .= '</h2>';
+                }
+
+                if (!empty($wp_location_thumbnail) || !empty($wp_location_content)) {
+                    $html .= '<p class="image_content">';
+                    if (!empty($wp_location_thumbnail)) {
+                        $html .= $wp_location_thumbnail;
+                    }
+
+                    if (!empty($wp_location_content)) {
+                        $html .= $wp_location_content;
+                    }
+                    $html .= '</p>';
+                }
+
+                //phone & email output
+                if (!empty($wp_location_phone) || !empty($wp_location_email)) {
+                    $html .= '<p class="phone_email">';
+                    if (!empty($wp_location_phone)) {
+                        $html .= '<b>Phone: </b>' . $wp_location_phone . '</br>';
+                    }
+                    if (!empty($wp_location_email)) {
+                        $html .= '<b>Email: </b>' . $wp_location_email;
+                    }
+                    $html .= '</p>';
+                }
+
+                //apply the filter after the main content, before it ends 
+                //(lets third parties hook into the HTML output to output data)
+                $html = apply_filters('wp_location_after_main_content', $html);
+
+                //readmore
+                $html .= '<a class="link" href="' . $wp_location_permalink . '" title="view location">View Location</a>';
+                $html .= '</section>';
             }
+            $html .= '</article>';
+            $html .= '<div class="cf"></div>';
         }
+          return $html;
     }
 
 }
