@@ -173,6 +173,20 @@ function custom_plugin_menu_function() {
                                value="<?php echo esc_attr($my_custom_plugin_options['option_name']); ?>" />
                     </td>
                 </tr>
+
+                <tr valign="top">
+                    <th scope="row">Email</th>
+                    <td><input type="text" name="my_custom_plugin_options[option_email]"
+                               value="<?php echo esc_attr($my_custom_plugin_options['option_email']); ?>"
+                               /></td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">URL</th>
+                    <td><input type="text" name="my_custom_plugin_options[option_url]"
+                               value="<?php echo esc_url($my_custom_plugin_options['option_url']); ?>" />
+                    </td>
+                </tr>
+
             </table>
             <p class="submit">
                 <input type="submit" class="button-primary"
@@ -181,4 +195,77 @@ function custom_plugin_menu_function() {
         </form>
     </div>
     <?php
+}
+
+/* plugin setting in setting inner page code start */
+add_action('admin_init', 'my_custom_plugin_settings_init');
+
+function my_custom_plugin_settings_init() {
+    add_settings_section('my_custom_plugin_setting_section', 'My custom Plugin Settings', 'my_custom_plugin_setting_section', 'reading');
+    add_settings_field("my_custom_plugin_setting_enable_id", "Enable My Custom Plugin?", "my_custom_setting_enabled", "reading", "my_custom_plugin_setting_section");
+    add_settings_field("my_custom_plugin_setting_name_id", "Your Name", "my_custom_setting_name", "reading", "my_custom_plugin_setting_section");
+    register_setting('reading', 'my_custom_plugin_setting_values', 'my_custom_plugin_sanitize_settings');
+}
+
+function my_custom_plugin_setting_section() {
+    echo '<p>Configure the Halloween plugin options below</p>';
+}
+
+function my_custom_plugin_sanitize_settings($input) {
+    $input['enabled'] = ( $input["enabled"] == "on" ) ? "on" : "";
+    $input["name"] = sanitize_text_field($input["name"]);
+    return $input;
+}
+
+function my_custom_setting_enabled() {
+    $my_custom_plugin_options = get_option('my_custom_plugin_setting_values');
+    echo "<input " . checked($my_custom_plugin_options["enabled"], "on", false) . " type='checkbox' name='my_custom_plugin_options[enabled]' /> Enabled";
+}
+
+function my_custom_setting_name() {
+    $my_custom_plugin_setting_values = get_option('my_custom_plugin_setting_values');
+    echo "<input type='text' name='my_custom_plugin_options[name]' value='" . esc_attr($my_custom_plugin_setting_values['name']) . "'>";
+}
+
+/* Custom Meta box code start */
+
+function my_custom_plugin_meta_box_init() {
+    add_meta_box('my-custom-css-meta', "Product Information", "my_custom_meta_box", "post", "side", "default");
+}
+
+add_action('add_meta_boxes', 'my_custom_plugin_meta_box_init');
+
+function my_custom_meta_box($post, $box) {
+    $custom_type = get_post_meta($post->ID, '_my_custom_plugin_type', true);
+    $custom_price = get_post_meta($post->ID, '_my_custom_plugin_price', true);
+
+    wp_nonce_field(plugin_basename(__FILE__), 'my_custom_plugin_save_meta_box');
+
+    echo '<p>Price: <input type="text" name="_my_custom_plugin_price" value="' . esc_attr($custom_price) . '" size="5" /></p>';
+    echo '<p>Type: <select name="_my_custom_plugin_type" id="_my_custom_plugin_type">
+ <option value="Normal" '
+    . selected($custom_type, 'normal', false) . '>Normal
+ </option>
+ <option value="Special" '
+    . selected($custom_type, 'special', false) . '>Special
+ </option>
+ <option value="Featured" '
+    . selected($custom_type, 'featured', false) . '>Featured
+ </option>
+ <option value="Clearance" '
+    . selected($custom_type, 'clearance', false) . '>Clearance
+ </option>
+ </select></p>';
+}
+add_action('save_post', "my_custom_plugin_save_meta_box");
+function my_custom_plugin_save_meta_box($post_id){
+    if(isset($_POST["_my_custom_plugin_type"])){
+        if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE){
+            return;
+        }
+        check_admin_referer(plugin_basename(__FILE__), 'my_custom_plugin_save_meta_box');
+        update_post_meta($post_id, '_my_custom_plugin_type', sanitize_text_field($_POST["_my_custom_plugin_type"]));
+        update_post_meta($post_id, '_my_custom_plugin_price', sanitize_text_field($_POST["_my_custom_plugin_price"]));
+        
+    }
 }
