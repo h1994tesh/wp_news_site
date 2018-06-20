@@ -257,15 +257,68 @@ function my_custom_meta_box($post, $box) {
  </option>
  </select></p>';
 }
+
 add_action('save_post', "my_custom_plugin_save_meta_box");
-function my_custom_plugin_save_meta_box($post_id){
-    if(isset($_POST["_my_custom_plugin_type"])){
-        if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE){
+
+function my_custom_plugin_save_meta_box($post_id) {
+    if (isset($_POST["_my_custom_plugin_type"])) {
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
             return;
         }
         check_admin_referer(plugin_basename(__FILE__), 'my_custom_plugin_save_meta_box');
         update_post_meta($post_id, '_my_custom_plugin_type', sanitize_text_field($_POST["_my_custom_plugin_type"]));
         update_post_meta($post_id, '_my_custom_plugin_price', sanitize_text_field($_POST["_my_custom_plugin_price"]));
-        
     }
+}
+
+add_shortcode('my_twitter', 'my_custom_plugin_twitter');
+
+function my_custom_plugin_twitter() {
+    return '<a href="https://twitter.com/williamsba">@williamsba</a>';
+}
+
+add_shortcode("custom_links", 'my_custom_plugin_links');
+
+function my_custom_plugin_links($atts, $content = null) {
+
+    extract(shortcode_atts(array(
+        'links' => 'loopjamaica'
+                    ), $atts));
+    if($links == 'looptt'){
+        return '<a href="http://www.looptt.com">LoopTT</a>';
+    }else if($links == 'loopjamaica'){
+        return '<a href="http://www.loopjamaica.com">LoopJamaica</a>';
+    }else if($links == 'loopslu'){
+        return '<a href="http://www.loopslu.com">LoopSLU</a>';
+    }
+}
+
+add_action('widgets_init', 'my_custom_widget_init');
+
+function my_custom_widget_init(){
+    register_widget('My_custom_widget');
+}
+class My_custom_widget extends WP_Widget{
+    public function __construct(){die('ddddd');
+        $widget_ops = array(
+            'classname' => 'My_custom_widget',
+            'discription' => 'Example widget that displays a user\'s bio.');
+        parent::WP_Widget('My_custom_widget', 'Bio Widget', $widget_ops);
+    }
+    
+    public function form( $instance ){
+        $defaults = array(
+            'title' => 'My Bio',
+            'name' => 'Hitesh Gandhi',
+            'bio' => ''
+        );
+        $instance = wp_parse_args((array) $instance, $defaults);
+        $title = $instance["title"];
+        $name = $instance["name"];
+        $bio = $instance['bio'];
+        ?>
+    <p>Title: <input type="text" class="widefat" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo esc_attr($title); ?>" /></p>
+    <p>Name: <input type="text" class="widefat" name="<?php echo $this->get_field_name('name'); ?>" value="<?php echo esc_attr($name); ?>" /></p>
+    <p>Bio: <textarea class="widefat" name="<?php echo $this->get_field_name('bio'); ?>" ><?php echo esc_textarea( $bio ); ?></textarea></p>
+    <?php }
 }
