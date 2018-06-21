@@ -604,7 +604,7 @@ article .article-info a {
 
 
 .sidebar li a {
-
+    text-decoration: none
     border-bottom-color: #ccc;
     color: #999;
 }
@@ -913,4 +913,23 @@ form.searchform{
 }
 .footer-callout-text p {
     font-size: .9rem;
+}
+.sidebar ul li{
+    margin-bottom: 0;
+    line-height: 30px;
+    padding: 0;
+}
+.tags a {
+    background: #8CB2CA;
+    color: #0000FF;
+    display: inline-block;
+    margin: 0 4px 8px 0;
+    padding: 2px 10px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    font-size: 10px;
+}
+.tags a:hover {
+    background: #699BBA;
 }

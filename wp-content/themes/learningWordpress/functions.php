@@ -68,6 +68,10 @@ function ourWidgetsInit() {
         'before_widget' => '<ul>',
         'after_widget' => '</ul>'
     ));
+    register_sidebar(array(
+        'name' => 'Product Categories',
+        'id' => 'sidebar2'
+    ));
 }
 
 add_action('widgets_init', 'ourWidgetsInit');
@@ -122,7 +126,7 @@ function learningWordpress_customize_css() {
             background-color: <?php echo get_theme_mod('learningWordpress_btn_color'); ?>;
         }
     </style>
-<?php
+    <?php
 }
 
 add_action('wp_head', 'learningWordpress_customize_css');
@@ -135,15 +139,88 @@ function learningWordpress_footer_callout($wp_customize) {
         'title' => __('Footer Callout', 'learningWordpress'),
         'priority' => 10,
     ));
-    /*$wp_customize->add_setting('learningWordpress-footer-callout-headline', array(
-        'default' => 'Example Headline text!',
-        'type' => 'theme_mod'
-    ));
-    $wp_customize->add_control(new WP_Customize_Control($wp_customize, 'learningWordpress-footer-callout-headline-section', array(
-        'label' => 'Headline',
-        'section' => 'learningWordpress-footer-callout-headline-section',
-        'setting' => 'learningWordpress-footer-callout-headline'
-    )));*/
+    /* $wp_customize->add_setting('learningWordpress-footer-callout-headline', array(
+      'default' => 'Example Headline text!',
+      'type' => 'theme_mod'
+      ));
+      $wp_customize->add_control(new WP_Customize_Control($wp_customize, 'learningWordpress-footer-callout-headline-section', array(
+      'label' => 'Headline',
+      'section' => 'learningWordpress-footer-callout-headline-section',
+      'setting' => 'learningWordpress-footer-callout-headline'
+      ))); */
 }
 
 add_action('customize_register', 'learningWordpress_footer_callout');
+
+add_action('init', 'learningWordpress_register_my_post_types');
+
+function learningWordpress_register_my_post_types() {
+
+    $labels = array(
+        'name' => 'Products',
+        'singular_name' => 'Product',
+        'add_new' => 'Add New Product',
+        'add_new_item' => 'Add New Product',
+        'edit_item' => 'Edit Product',
+        'new_item' => 'New Product',
+        'all_items' => 'All Products',
+        'view_item' => 'View Product',
+        'search_items' => 'Search Products',
+        'not_found' => 'No products found',
+        'not_found_in_trash' => 'No products found in Trash',
+        'parent_item_colon' => '',
+        'menu_name' => 'Products',
+    );
+
+    $args = array(
+        'labels' => $labels,
+        'public' => true,
+        'has_archive' => true,
+        'taxonomies' => array('category'),
+        'rewrite' => array('products'),
+        'supports' => array('title', 'editor', 'author', 'thumbnail', 'comments')
+    );
+
+    register_post_type('products', $args);
+    flush_rewrite_rules();
+}
+
+function learningWordpress_css() {
+
+    echo "
+    <style type='text/css'>
+    .fs-has-title{display: none;}
+    </style>
+    ";
+}
+
+add_action('admin_head', 'learningWordpress_css');
+
+add_action('init', 'learningWordpress_product_type_taxonomy');
+
+function learningWordpress_product_type_taxonomy() {
+
+    $labels = array(
+        'name' => 'Type',
+        'singular_name' => 'Types',
+        'search_items' => 'Search Types',
+        'all_items' => 'All Types',
+        'parent_item' => 'Parent Type',
+        'parent_item_colon' => 'Parent Type:',
+        'edit_item' => 'Edit Type',
+        'update_item' => 'Update Type',
+        'add_new_item' => 'Add New Type',
+        'new_item_name' => 'New Type Name',
+        'menu_name' => 'Type'
+    );
+
+    $args = array(
+        'labels' => $labels,
+        'hierarchical' => true,
+        'query_var' => true,
+        'rewrite' => true
+    );
+    register_taxonomy('type', 'products', $args);
+}
+
+?>

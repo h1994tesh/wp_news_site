@@ -113,7 +113,7 @@ function my_custom_plugin_delete_link($content) {
  */
 function my_custom_plugin_delete_post() {
     if (isset($_GET["action"]) && $_GET["action"] === 'my_custom_post_delete') {
-        die('ddddd');
+        
     }
 }
 
@@ -270,7 +270,7 @@ function my_custom_plugin_save_meta_box($post_id) {
         update_post_meta($post_id, '_my_custom_plugin_price', sanitize_text_field($_POST["_my_custom_plugin_price"]));
     }
 }
-
+/* shortcode coding start */
 add_shortcode('my_twitter', 'my_custom_plugin_twitter');
 
 function my_custom_plugin_twitter() {
@@ -293,13 +293,13 @@ function my_custom_plugin_links($atts, $content = null) {
     }
 }
 
-add_action('widgets_init', 'my_custom_widget_init');
+//add_action('widgets_init', 'my_custom_widget_init');
 
 function my_custom_widget_init(){
     register_widget('My_custom_widget');
 }
 class My_custom_widget extends WP_Widget{
-    public function __construct(){die('ddddd');
+    public function __construct(){
         $widget_ops = array(
             'classname' => 'My_custom_widget',
             'discription' => 'Example widget that displays a user\'s bio.');

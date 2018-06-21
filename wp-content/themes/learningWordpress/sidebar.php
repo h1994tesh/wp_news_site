@@ -54,5 +54,9 @@
     if (is_active_sidebar('sidebar1')) {
         dynamic_sidebar('sidebar1');
     }
+    
+    echo "<div class='tags'>";
+        wp_tag_cloud( array( 'taxonomy' => 'type', 'number' => 10, 'show_count' => 1 ) );
+    echo "</div>";
     ?>
 </aside>
